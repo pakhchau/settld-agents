@@ -55,15 +55,11 @@
     50% { opacity: 0.7; transform: translate(-10px, 10px) scale(0.95); }
     75% { opacity: 1; transform: translate(20px, 15px) scale(1.08); }
   }
-  /* Elastic bounce feedback */
-  .slide.bounce-left { animation: bounceL 0.35s ease-out; }
-  .slide.bounce-right { animation: bounceR 0.35s ease-out; }
-  .slide.bounce-up { animation: bounceU 0.35s ease-out; }
-  .slide.bounce-down { animation: bounceD 0.35s ease-out; }
-  @keyframes bounceL { 0% { transform: translateX(0); } 30% { transform: translateX(-18px); } 100% { transform: translateX(0); } }
-  @keyframes bounceR { 0% { transform: translateX(0); } 30% { transform: translateX(18px); } 100% { transform: translateX(0); } }
-  @keyframes bounceU { 0% { transform: translateY(0); } 30% { transform: translateY(-14px); } 100% { transform: translateY(0); } }
-  @keyframes bounceD { 0% { transform: translateY(0); } 30% { transform: translateY(14px); } 100% { transform: translateY(0); } }
+  /* Gentle edge feedback — no bounce */
+  .slide.bounce-left { animation: none; }
+  .slide.bounce-right { animation: none; }
+  .slide.bounce-up { animation: none; }
+  .slide.bounce-down { animation: none; }
   /* Hold-to-peek */
   #peek-overlay {
     position: fixed; inset: 0; z-index: 250; pointer-events: none;
@@ -90,22 +86,23 @@
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
     padding: 80px 32px 90px;
-    transition: opacity 0.45s cubic-bezier(0.25,0.1,0.25,1), transform 0.45s cubic-bezier(0.25,0.1,0.25,1), filter 0.45s ease;
+    transition: opacity 0.6s ease, filter 0.6s ease;
     will-change: transform, opacity, filter; overflow-y: auto;
   }
   /* Staggered text entrance */
-  .slide.active h1 { animation: textUp 0.6s ease-out 0.12s both; }
-  .slide.active h2 { animation: textUp 0.6s ease-out 0.18s both; }
-  .slide.active p, .slide.active .body { animation: textUp 0.5s ease-out 0.28s both; }
-  .slide.active .emoji-big { animation: textUp 0.5s ease-out 0s both; }
-  .slide.active table { animation: textUp 0.5s ease-out 0.32s both; }
-  .slide.active .quote { animation: textUp 0.6s ease-out 0.22s both; }
-  .slide.active .flow-row { animation: textUp 0.5s ease-out 0.22s both; }
+  .slide.active h1 { animation: fadeIn 0.7s ease 0.1s both; }
+  .slide.active h2 { animation: fadeIn 0.7s ease 0.15s both; }
+  .slide.active p, .slide.active .body { animation: fadeIn 0.6s ease 0.25s both; }
+  .slide.active .emoji-big { animation: fadeIn 0.6s ease 0s both; }
+  .slide.active table { animation: fadeIn 0.6s ease 0.3s both; }
+  .slide.active .quote { animation: fadeIn 0.7s ease 0.2s both; }
+  .slide.active .flow-row { animation: fadeIn 0.6s ease 0.2s both; }
   .slide.active .stat { animation: statUp 0.7s ease-out 0.1s both; }
-  .slide.active .label { animation: textUp 0.4s ease-out 0s both; }
-  .slide.active .pill { animation: textUp 0.4s ease-out 0.4s both; }
-  @keyframes textUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes statUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .slide.active .label { animation: fadeIn 0.5s ease 0s both; }
+  .slide.active .pill { animation: fadeIn 0.5s ease 0.35s both; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes textUp { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes statUp { from { opacity: 0; } to { opacity: 1; } }
   /* Lateral transitions (left/right siblings) */
   .slide.exit-left   { transform: translateX(-100%); opacity: 0; }
   .slide.exit-right  { transform: translateX(100%);  opacity: 0; }
