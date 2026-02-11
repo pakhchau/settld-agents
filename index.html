@@ -20,6 +20,49 @@
     content: ''; position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0.025;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+  /* Ambient background orbs */
+  .ambient-orb {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    filter: blur(80px); opacity: 0; animation: orbFloat 12s ease-in-out infinite;
+  }
+  .ambient-orb.orb-1 { width: 300px; height: 300px; background: rgba(201,168,76,0.04); top: 15%; left: -5%; animation-delay: 0s; }
+  .ambient-orb.orb-2 { width: 250px; height: 250px; background: rgba(100,130,200,0.03); bottom: 10%; right: -8%; animation-delay: -4s; }
+  .ambient-orb.orb-3 { width: 200px; height: 200px; background: rgba(201,168,76,0.025); top: 50%; left: 60%; animation-delay: -8s; }
+  @keyframes orbFloat {
+    0%, 100% { opacity: 0.6; transform: translate(0, 0) scale(1); }
+    25% { opacity: 1; transform: translate(15px, -20px) scale(1.05); }
+    50% { opacity: 0.7; transform: translate(-10px, 10px) scale(0.95); }
+    75% { opacity: 1; transform: translate(20px, 15px) scale(1.08); }
+  }
+  /* Elastic bounce feedback */
+  .slide.bounce-left { animation: bounceL 0.35s ease-out; }
+  .slide.bounce-right { animation: bounceR 0.35s ease-out; }
+  .slide.bounce-up { animation: bounceU 0.35s ease-out; }
+  .slide.bounce-down { animation: bounceD 0.35s ease-out; }
+  @keyframes bounceL { 0% { transform: translateX(0); } 30% { transform: translateX(-18px); } 100% { transform: translateX(0); } }
+  @keyframes bounceR { 0% { transform: translateX(0); } 30% { transform: translateX(18px); } 100% { transform: translateX(0); } }
+  @keyframes bounceU { 0% { transform: translateY(0); } 30% { transform: translateY(-14px); } 100% { transform: translateY(0); } }
+  @keyframes bounceD { 0% { transform: translateY(0); } 30% { transform: translateY(14px); } 100% { transform: translateY(0); } }
+  /* Hold-to-peek */
+  #peek-overlay {
+    position: fixed; inset: 0; z-index: 250; pointer-events: none;
+    display: flex; justify-content: center; align-items: center;
+    background: rgba(4,4,8,0.85); opacity: 0; transition: opacity 0.2s ease;
+    backdrop-filter: blur(8px);
+  }
+  #peek-overlay.visible { opacity: 1; }
+  #peek-card {
+    width: 75vw; max-width: 340px; aspect-ratio: 9/16; border-radius: 16px;
+    overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 24px 20px; text-align: center; transform: scale(0.92); opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #peek-overlay.visible #peek-card { transform: scale(1); opacity: 1; }
+  #peek-card .peek-dir { font-size: 8px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.3; margin-bottom: 12px; }
+  #peek-card h2 { font-size: 16px; margin-bottom: 8px; }
+  #peek-card p { font-size: 12px; opacity: 0.5; }
   #canvas { width: 100%; height: 100vh; position: relative; overflow: hidden; }
   .slide {
     position: absolute; inset: 0;
@@ -183,6 +226,7 @@
   <div id="minimap-tree"></div>
 </div>
 <div id="share-toast"></div>
+<div id="peek-overlay"><div id="peek-card"></div></div>
 <div id="canvas"></div>
 
 <script>
@@ -388,7 +432,10 @@ function animateCounters(slide){
     requestAnimationFrame(tick);
   });
 }
-function renderSlide(node,dir){if(!node)return;const s=document.createElement('div');s.className=`slide ${node.theme?'theme-'+node.theme:'theme-black'}`;s.innerHTML=node.content;if(dir)s.classList.add('enter-'+dir);else s.classList.add('active');canvas.appendChild(s);if(currentSlideEl){const old=currentSlideEl;const ed=dir==='left'?'right':dir==='right'?'left':dir==='up'?'down':dir==='down'?'up':'left';old.classList.remove('active');old.classList.add('exit-'+ed);setTimeout(()=>old.remove(),400)}requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.classList.remove('enter-left','enter-right','enter-up','enter-down');s.classList.add('active');animateCounters(s)})});currentSlideEl=s;updateUI()}
+function addAmbientOrbs(slide){
+  for(let i=1;i<=3;i++){const o=document.createElement('div');o.className=`ambient-orb orb-${i}`;slide.appendChild(o)}
+}
+function renderSlide(node,dir){if(!node)return;const s=document.createElement('div');s.className=`slide ${node.theme?'theme-'+node.theme:'theme-black'}`;s.innerHTML=node.content;addAmbientOrbs(s);if(dir)s.classList.add('enter-'+dir);else s.classList.add('active');canvas.appendChild(s);if(currentSlideEl){const old=currentSlideEl;const ed=dir==='left'?'right':dir==='right'?'left':dir==='up'?'down':dir==='down'?'up':'left';old.classList.remove('active');old.classList.add('exit-'+ed);setTimeout(()=>old.remove(),400)}requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.classList.remove('enter-left','enter-right','enter-up','enter-down');s.classList.add('active');animateCounters(s)})});currentSlideEl=s;updateUI()}
 function updateUI(){const node=currentNode(),siblings=currentSiblings(),idx=currentIndex(),hasChildren=node&&node.children&&node.children.length>0,isDeep=path.length>1;let crumbs='';for(let d=0;d<path.length;d++){const p=path.slice(0,d+1),n=getNode(p);if(d>0)crumbs+='<span class="sep">›</span>';crumbs+=`<span class="crumb ${d===path.length-1?'current':''}" data-path="${p.join(',')}">${n?(n.title||n.id):''}</span>`}breadcrumbEl.innerHTML=crumbs;breadcrumbEl.querySelectorAll('.crumb').forEach(el=>{el.addEventListener('click',()=>{const tp=el.dataset.path.split(',').map(Number);if(tp.join(',')!==path.join(',')){path=tp;renderSlide(currentNode(),'down')}})});counterEl.textContent=`${idx+1} / ${siblings.length}`;progressEl.innerHTML='';siblings.forEach((sib,i)=>{const seg=document.createElement('div');seg.className='seg';if(i<idx)seg.classList.add('visited');if(i===idx)seg.classList.add('active');if(sib.children&&sib.children.length>0)seg.classList.add('has-children');seg.addEventListener('click',()=>{if(i!==idx){path[path.length-1]=i;renderSlide(currentNode(),i>idx?'left':'right')}});progressEl.appendChild(seg)});if(hasChildren){diveEl.classList.add('visible')}else{diveEl.classList.remove('visible')}if(isDeep)backEl.classList.add('visible');else backEl.classList.remove('visible');depthEl.innerHTML='';if(path.length>1){for(let d=0;d<path.length;d++){const r=document.createElement('div');r.className='depth-ring';if(d===path.length-1)r.classList.add('active');else r.classList.add('ancestor');depthEl.appendChild(r)}}leftArrow.classList.toggle('visible',idx>0);rightArrow.classList.toggle('visible',idx<siblings.length-1)}
 const minimap=document.getElementById('minimap'),minimapTree=document.getElementById('minimap-tree');
 let mapView='grid';
@@ -453,10 +500,80 @@ function renderMap(){
 function renderListMap(){function rn(node,par,np){const el=document.createElement('div');el.className='map-node';if(np.join(',')===path.join(','))el.classList.add('current');el.innerHTML=`<div class="map-dot"></div><div><div class="map-label">${node.title||node.id}</div><div class="map-id">§${node.id}</div></div>`;el.addEventListener('click',()=>{path=[...np];renderSlide(currentNode(),null);toggleMap()});par.appendChild(el);if(node.children&&node.children.length>0){const cc=document.createElement('div');cc.className='map-children';node.children.forEach((c,i)=>rn(c,cc,[...np,i]));par.appendChild(cc)}}TREE.children.forEach((c,i)=>rn(c,minimapTree,[i]))}
 backEl.addEventListener('click',()=>navigate('up'));
 let isAnimating=false;
-function navigate(a){if(isAnimating)return;isAnimating=true;setTimeout(()=>isAnimating=false,380);const node=currentNode(),siblings=currentSiblings(),idx=currentIndex();switch(a){case'right':if(idx<siblings.length-1){path[path.length-1]++;renderSlide(currentNode(),'left')}else if(path.length>1){path.pop();const pi=path[path.length-1],ps=currentSiblings();if(pi<ps.length-1){path[path.length-1]++;renderSlide(currentNode(),'left')}else renderSlide(currentNode(),'up')}break;case'left':if(idx>0){path[path.length-1]--;renderSlide(currentNode(),'right')}break;case'down':if(node&&node.children&&node.children.length>0){path.push(0);renderSlide(currentNode(),'up')}break;case'up':if(path.length>1){path.pop();renderSlide(currentNode(),'down')}break}}
+function bounce(dir){
+  if(!currentSlideEl)return;
+  currentSlideEl.classList.remove('bounce-left','bounce-right','bounce-up','bounce-down');
+  void currentSlideEl.offsetWidth; // force reflow
+  currentSlideEl.classList.add('bounce-'+dir);
+  setTimeout(()=>currentSlideEl&&currentSlideEl.classList.remove('bounce-'+dir),400);
+}
+function navigate(a){if(isAnimating)return;const node=currentNode(),siblings=currentSiblings(),idx=currentIndex();
+  switch(a){
+    case'right':
+      if(idx<siblings.length-1){isAnimating=true;setTimeout(()=>isAnimating=false,420);path[path.length-1]++;renderSlide(currentNode(),'left')}
+      else if(path.length>1){isAnimating=true;setTimeout(()=>isAnimating=false,420);path.pop();const pi=path[path.length-1],ps=currentSiblings();if(pi<ps.length-1){path[path.length-1]++;renderSlide(currentNode(),'left')}else renderSlide(currentNode(),'up')}
+      else bounce('right');
+      break;
+    case'left':
+      if(idx>0){isAnimating=true;setTimeout(()=>isAnimating=false,420);path[path.length-1]--;renderSlide(currentNode(),'right')}
+      else bounce('left');
+      break;
+    case'down':
+      if(node&&node.children&&node.children.length>0){isAnimating=true;setTimeout(()=>isAnimating=false,420);path.push(0);renderSlide(currentNode(),'up')}
+      else bounce('down');
+      break;
+    case'up':
+      if(path.length>1){isAnimating=true;setTimeout(()=>isAnimating=false,420);path.pop();renderSlide(currentNode(),'down')}
+      else bounce('up');
+      break;
+  }
+}
+// Hold-to-peek
+const peekOverlay=document.getElementById('peek-overlay'),peekCard=document.getElementById('peek-card');
+let holdTimer=null,isPeeking=false;
+function getPeekNode(dir){
+  const node=currentNode(),siblings=currentSiblings(),idx=currentIndex();
+  if(dir==='right'&&idx<siblings.length-1)return{node:siblings[idx+1],label:'Next →'};
+  if(dir==='left'&&idx>0)return{node:siblings[idx-1],label:'← Previous'};
+  if(dir==='down'&&node&&node.children&&node.children.length>0)return{node:node.children[0],label:'↓ Dive in'};
+  if(dir==='up'&&path.length>1){const pp=path.slice(0,-1);const pn=getNode(pp);return pn?{node:pn,label:'↑ Back up'}:null}
+  return null;
+}
+function showPeek(dir){
+  const peek=getPeekNode(dir);if(!peek)return;
+  isPeeking=true;
+  const bg=themeGrads[peek.node.theme]||themeGrads.black;
+  const pv=getPreview(peek.node);
+  peekCard.style.background=bg;
+  peekCard.innerHTML=`<div class="peek-dir">${peek.label}</div><h2>${peek.node.title||peek.node.id}</h2>${pv.sub?`<p>${pv.sub}</p>`:''}`;
+  peekOverlay.classList.add('visible');
+}
+function hidePeek(){isPeeking=false;peekOverlay.classList.remove('visible')}
 let tx=0,ty=0,tt=0;
-document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;tt=Date.now()},{passive:true});
-document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty,dt=Date.now()-tt;if(dt>600||(Math.abs(dx)<25&&Math.abs(dy)<25))return;if(Math.abs(dx)>Math.abs(dy))navigate(dx<-25?'right':'left');else navigate(dy<-25?'down':'up')},{passive:true});
+document.addEventListener('touchstart',e=>{
+  tx=e.touches[0].clientX;ty=e.touches[0].clientY;tt=Date.now();
+  // Start hold timer for peek
+  clearTimeout(holdTimer);
+  holdTimer=setTimeout(()=>{
+    // Determine direction from touch position
+    const vw=window.innerWidth,vh=window.innerHeight,cx=tx,cy=ty;
+    let dir=null;
+    if(cx<vw*0.2)dir='left'; else if(cx>vw*0.8)dir='right';
+    else if(cy<vh*0.25)dir='up'; else if(cy>vh*0.75)dir='down';
+    if(dir)showPeek(dir);
+  },400);
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  const dx=Math.abs(e.touches[0].clientX-tx),dy=Math.abs(e.touches[0].clientY-ty);
+  if(dx>10||dy>10){clearTimeout(holdTimer);if(isPeeking)hidePeek()}
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  clearTimeout(holdTimer);
+  if(isPeeking){hidePeek();return}
+  const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty,dt=Date.now()-tt;
+  if(dt>600||(Math.abs(dx)<25&&Math.abs(dy)<25))return;
+  if(Math.abs(dx)>Math.abs(dy))navigate(dx<-25?'right':'left');else navigate(dy<-25?'down':'up');
+},{passive:true});
 document.addEventListener('keydown',e=>{if(minimap.classList.contains('open')){if(e.key==='Escape')toggleMap();return}switch(e.key){case'ArrowRight':case'l':navigate('right');break;case'ArrowLeft':case'h':navigate('left');break;case'ArrowDown':case'j':case' ':navigate('down');e.preventDefault();break;case'ArrowUp':case'k':navigate('up');e.preventDefault();break;case'Escape':if(path.length>1)navigate('up');break;case'm':toggleMap();break}});
 let wL=false;document.addEventListener('wheel',e=>{e.preventDefault();if(wL)return;wL=true;setTimeout(()=>wL=false,400);if(Math.abs(e.deltaX)>Math.abs(e.deltaY)&&Math.abs(e.deltaX)>10)navigate(e.deltaX>0?'right':'left');else if(Math.abs(e.deltaY)>10)navigate(e.deltaY>0?'down':'up')},{passive:false});
 renderSlide(currentNode(),null);
