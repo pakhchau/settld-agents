@@ -727,7 +727,36 @@ function renderSlide(node,dir){if(!node)return;const s=document.createElement('d
   const contentWrap=document.createElement('div');contentWrap.style.cssText='position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%';contentWrap.innerHTML=node.content;s.appendChild(contentWrap);
   // Slide ID badge
   const idBadge=document.createElement('div');idBadge.className='slide-id';idBadge.textContent=node.id;s.appendChild(idBadge);
-  addAmbientOrbs(s);if(dir)s.classList.add('enter-'+dir);else s.classList.add('active');canvas.appendChild(s);if(currentSlideEl){const old=currentSlideEl;const ed=dir==='left'?'right':dir==='right'?'left':dir==='up'?'down':dir==='down'?'up':'left';old.classList.remove('active');old.classList.add('exit-'+ed);setTimeout(()=>old.remove(),400)}requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.classList.remove('enter-left','enter-right','enter-up','enter-down');s.classList.add('active');animateCounters(s)})});currentSlideEl=s;updateUI()}
+  addAmbientOrbs(s);
+  if(dir){
+    // Instagram style: position new slide offscreen, then slide it over
+    s.style.transition='none';
+    s.classList.add('enter-'+dir);
+    canvas.appendChild(s);
+    // Force layout so the enter position is applied before transition starts
+    s.getBoundingClientRect();
+    s.style.transition='';
+    // Old slide stays put (no exit transform), just gets lower z-index
+    if(currentSlideEl){
+      const old=currentSlideEl;
+      old.style.zIndex='1';
+      old.classList.remove('active');
+      setTimeout(()=>old.remove(),500);
+    }
+    // Slide the new card into position
+    requestAnimationFrame(()=>{
+      s.classList.remove('enter-left','enter-right','enter-up','enter-down');
+      s.classList.add('active');
+      s.style.zIndex='2';
+      animateCounters(s);
+    });
+  } else {
+    s.classList.add('active');
+    canvas.appendChild(s);
+    if(currentSlideEl) currentSlideEl.remove();
+    animateCounters(s);
+  }
+  currentSlideEl=s;updateUI()}
 function updateUI(){const node=currentNode(),siblings=currentSiblings(),idx=currentIndex(),hasChildren=node&&node.children&&node.children.length>0,isDeep=path.length>1;let crumbs='';for(let d=0;d<path.length;d++){const p=path.slice(0,d+1),n=getNode(p);if(d>0)crumbs+='<span class="sep">›</span>';crumbs+=`<span class="crumb ${d===path.length-1?'current':''}" data-path="${p.join(',')}">${n?(n.title||n.id):''}</span>`}breadcrumbEl.innerHTML=crumbs;breadcrumbEl.querySelectorAll('.crumb').forEach(el=>{el.addEventListener('click',()=>{const tp=el.dataset.path.split(',').map(Number);if(tp.join(',')!==path.join(',')){path=tp;renderSlide(currentNode(),'down')}})});counterEl.textContent=`${idx+1} / ${siblings.length}`;progressEl.innerHTML='';siblings.forEach((sib,i)=>{const seg=document.createElement('div');seg.className='seg';if(i<idx)seg.classList.add('visited');if(i===idx)seg.classList.add('active');if(sib.children&&sib.children.length>0)seg.classList.add('has-children');seg.addEventListener('click',()=>{if(i!==idx){path[path.length-1]=i;renderSlide(currentNode(),i>idx?'left':'right')}});progressEl.appendChild(seg)});if(hasChildren){
     diveEl.classList.add('visible');
     const firstChild=node.children[0];
