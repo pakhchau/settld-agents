@@ -137,9 +137,46 @@
   #counter { font-size: 11px; font-weight: 700; opacity: 0.4; letter-spacing: 0.05em; margin-left: auto; }
   #map-toggle { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; opacity: 0.4; transition: opacity 0.2s; margin-left: 12px; border-radius: 6px; }
   #map-toggle:hover { opacity: 0.9; background: rgba(255,255,255,0.06); }
-  #share-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; opacity: 0.4; transition: all 0.2s; margin-left: 8px; border-radius: 6px; border: none; background: none; color: #e8e8e8; -webkit-tap-highlight-color: transparent; }
-  #share-btn:hover, #share-btn:active { opacity: 0.9; background: rgba(255,255,255,0.06); }
+  #share-btn, #feedback-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; opacity: 0.4; transition: all 0.2s; margin-left: 8px; border-radius: 6px; border: none; background: none; color: #e8e8e8; -webkit-tap-highlight-color: transparent; position: relative; }
+  #share-btn:hover, #share-btn:active, #feedback-btn:hover, #feedback-btn:active { opacity: 0.9; background: rgba(255,255,255,0.06); }
   #share-btn.copied { opacity: 1; color: #c9a84c; }
+  #feedback-btn.has-notes { opacity: 0.7; }
+  #feedback-btn .fb-badge { position: absolute; top: 2px; right: 2px; width: 7px; height: 7px; border-radius: 50%; background: #c9a84c; display: none; }
+  #feedback-btn.has-notes .fb-badge { display: block; }
+
+  /* Feedback panel */
+  #feedback-panel {
+    position: fixed; inset: 0; z-index: 350; display: none; flex-direction: column;
+    background: rgba(4,4,8,0.96); backdrop-filter: blur(30px);
+    padding: 56px 20px 20px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+  #feedback-panel.open { display: flex; }
+  #fb-close { position: fixed; top: 14px; right: 16px; font-size: 22px; cursor: pointer; opacity: 0.4; z-index: 360; }
+  #fb-slide-ref { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.25; margin-bottom: 6px; }
+  #fb-slide-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; opacity: 0.8; }
+  .fb-section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.3; margin-bottom: 8px; margin-top: 16px; }
+  #fb-text { width: 100%; min-height: 80px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #e8e8e8; font-family: 'Inter', sans-serif; font-size: 14px; padding: 14px 16px; resize: vertical; outline: none; transition: border-color 0.2s; }
+  #fb-text:focus { border-color: rgba(201,168,76,0.4); }
+  #fb-text::placeholder { color: rgba(255,255,255,0.2); }
+  #fb-actions { display: flex; gap: 10px; margin-top: 12px; }
+  #fb-actions button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  #fb-send { background: rgba(201,168,76,0.15); color: #c9a84c; border: 1px solid rgba(201,168,76,0.25); }
+  #fb-send:hover { background: rgba(201,168,76,0.25); }
+  #fb-record { background: rgba(255,255,255,0.04); color: #e8e8e8; border: 1px solid rgba(255,255,255,0.08); }
+  #fb-record:hover { background: rgba(255,255,255,0.08); }
+  #fb-record.recording { background: rgba(214,90,106,0.2); color: #d45a6a; border-color: rgba(214,90,106,0.4); animation: recPulse 1s ease-in-out infinite; }
+  @keyframes recPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+  /* Feedback list */
+  .fb-entry { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 12px 14px; margin-top: 8px; }
+  .fb-entry-meta { font-size: 10px; opacity: 0.3; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .fb-entry-text { font-size: 13px; line-height: 1.5; opacity: 0.7; }
+  .fb-entry-audio { margin-top: 6px; }
+  .fb-entry-audio audio { width: 100%; height: 32px; opacity: 0.6; }
+  .fb-entry-delete { font-size: 10px; opacity: 0.3; cursor: pointer; transition: opacity 0.2s; }
+  .fb-entry-delete:hover { opacity: 0.8; color: #d45a6a; }
+  .fb-scope { display: flex; gap: 4px; margin-bottom: 16px; }
+  .fb-scope button { padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); color: #e8e8e8; font-size: 11px; font-weight: 600; cursor: pointer; opacity: 0.4; transition: all 0.2s; }
+  .fb-scope button.active { opacity: 1; background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.2); color: #c9a84c; }
   #share-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.25); color: #c9a84c; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; z-index: 400; opacity: 0; transition: all 0.3s ease; pointer-events: none; backdrop-filter: blur(20px); }
   #share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   #progress-bar { position: fixed; top: 48px; left: 0; right: 0; height: 1.5px; z-index: 200; display: flex; gap: 2px; padding: 0 20px; }
@@ -218,6 +255,7 @@
 <div id="topbar">
   <div id="breadcrumb"></div>
   <div id="counter"></div>
+  <button id="feedback-btn" onclick="toggleFeedback()">💬<span class="fb-badge"></span></button>
   <button id="share-btn" onclick="shareDeck()">↗</button>
   <div id="map-toggle" onclick="toggleMap()">☰</div>
 </div>
@@ -242,6 +280,24 @@
   <div id="minimap-tree"></div>
 </div>
 <div id="share-toast"></div>
+<div id="feedback-panel">
+  <div id="fb-close" onclick="toggleFeedback()">✕</div>
+  <div id="fb-slide-ref"></div>
+  <div id="fb-slide-title"></div>
+  <div class="fb-scope">
+    <button class="active" onclick="setFbScope('slide')" id="fb-scope-slide">This slide</button>
+    <button onclick="setFbScope('children')" id="fb-scope-children">+ Children</button>
+    <button onclick="setFbScope('all')" id="fb-scope-all">All feedback</button>
+  </div>
+  <div class="fb-section-label">Add feedback</div>
+  <textarea id="fb-text" placeholder="Type your feedback on this slide..."></textarea>
+  <div id="fb-actions">
+    <button id="fb-record" onclick="toggleRecord()">🎙 Record</button>
+    <button id="fb-send" onclick="sendFeedback()">Send ✓</button>
+  </div>
+  <div class="fb-section-label">Notes on this slide</div>
+  <div id="fb-list"></div>
+</div>
 <div id="peek-overlay"><div id="peek-card"></div></div>
 <div id="canvas"></div>
 
@@ -633,6 +689,136 @@ async function shareDeck(){
     }
   }
 }
+
+// ── FEEDBACK SYSTEM ──
+const fbPanel=document.getElementById('feedback-panel');
+const fbBtn=document.getElementById('feedback-btn');
+let fbScope='slide';
+let mediaRecorder=null, audioChunks=[], isRecording=false;
+
+function getFeedbackStore(){
+  try{return JSON.parse(localStorage.getItem('storybook_feedback')||'{}');}catch(e){return{}}
+}
+function saveFeedbackStore(store){localStorage.setItem('storybook_feedback',JSON.stringify(store))}
+
+function toggleFeedback(){
+  fbPanel.classList.toggle('open');
+  if(fbPanel.classList.contains('open'))renderFeedbackPanel();
+}
+
+function setFbScope(s){
+  fbScope=s;
+  document.getElementById('fb-scope-slide').classList.toggle('active',s==='slide');
+  document.getElementById('fb-scope-children').classList.toggle('active',s==='children');
+  document.getElementById('fb-scope-all').classList.toggle('active',s==='all');
+  renderFeedbackList();
+}
+
+function renderFeedbackPanel(){
+  const node=currentNode();
+  document.getElementById('fb-slide-ref').textContent='§'+node.id;
+  document.getElementById('fb-slide-title').textContent=node.title||node.id;
+  document.getElementById('fb-text').value='';
+  renderFeedbackList();
+}
+
+function renderFeedbackList(){
+  const store=getFeedbackStore(),list=document.getElementById('fb-list');
+  list.innerHTML='';
+  const node=currentNode();
+  let entries=[];
+  if(fbScope==='all'){
+    Object.keys(store).forEach(k=>{(store[k]||[]).forEach(e=>{entries.push({...e,slideId:k})})});
+  } else if(fbScope==='children'){
+    const ids=[node.id];
+    if(node.children)node.children.forEach(c=>ids.push(c.id));
+    ids.forEach(id=>{(store[id]||[]).forEach(e=>{entries.push({...e,slideId:id})})});
+  } else {
+    (store[node.id]||[]).forEach(e=>{entries.push({...e,slideId:node.id})});
+  }
+  entries.sort((a,b)=>b.ts-a.ts);
+  if(!entries.length){list.innerHTML='<div style="opacity:0.2;font-size:12px;text-align:center;padding:20px">No feedback yet</div>';return}
+  entries.forEach((e,i)=>{
+    const d=document.createElement('div');d.className='fb-entry';
+    const time=new Date(e.ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    let html=`<div class="fb-entry-meta"><span>§${e.slideId} · ${time}</span><span class="fb-entry-delete" data-id="${e.slideId}" data-ts="${e.ts}">✕</span></div>`;
+    if(e.text)html+=`<div class="fb-entry-text">${e.text}</div>`;
+    if(e.audio)html+=`<div class="fb-entry-audio"><audio controls src="${e.audio}"></audio></div>`;
+    d.innerHTML=html;
+    d.querySelector('.fb-entry-delete').addEventListener('click',function(){
+      const sid=this.dataset.id,ts=parseInt(this.dataset.ts);
+      const st=getFeedbackStore();
+      st[sid]=(st[sid]||[]).filter(x=>x.ts!==ts);
+      if(!st[sid].length)delete st[sid];
+      saveFeedbackStore(st);renderFeedbackList();updateFeedbackBadge();
+    });
+    list.appendChild(d);
+  });
+}
+
+function sendFeedback(){
+  const node=currentNode(),text=document.getElementById('fb-text').value.trim();
+  if(!text)return;
+  const store=getFeedbackStore();
+  if(!store[node.id])store[node.id]=[];
+  store[node.id].push({text,ts:Date.now(),type:'text'});
+  saveFeedbackStore(store);
+  document.getElementById('fb-text').value='';
+  renderFeedbackList();
+  updateFeedbackBadge();
+}
+
+async function toggleRecord(){
+  const btn=document.getElementById('fb-record');
+  if(isRecording){
+    isRecording=false;
+    mediaRecorder.stop();
+    btn.classList.remove('recording');
+    btn.textContent='🎙 Record';
+    return;
+  }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRecorder=new MediaRecorder(stream);
+    audioChunks=[];
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data)};
+    mediaRecorder.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(audioChunks,{type:'audio/webm'});
+      const reader=new FileReader();
+      reader.onloadend=()=>{
+        const node=currentNode(),store=getFeedbackStore();
+        if(!store[node.id])store[node.id]=[];
+        store[node.id].push({audio:reader.result,ts:Date.now(),type:'voice'});
+        saveFeedbackStore(store);renderFeedbackList();updateFeedbackBadge();
+      };
+      reader.readAsDataURL(blob);
+    };
+    mediaRecorder.start();
+    isRecording=true;
+    btn.classList.add('recording');
+    btn.textContent='⏹ Stop';
+  }catch(e){
+    const toast=document.getElementById('share-toast');
+    toast.textContent='Microphone access denied';
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),2000);
+  }
+}
+
+function updateFeedbackBadge(){
+  const store=getFeedbackStore(),node=currentNode();
+  const hasAny=Object.keys(store).length>0;
+  const hasCurrent=store[node.id]&&store[node.id].length>0;
+  fbBtn.classList.toggle('has-notes',hasCurrent);
+}
+
+// Hook into updateUI to refresh badge
+const _origUpdateUI=updateUI;
+function patchedUpdateUI(){_origUpdateUI.apply(this,arguments);updateFeedbackBadge();}
+// Replace references - call badge update after renders
+setInterval(updateFeedbackBadge,500); // lightweight poll for badge state
+updateFeedbackBadge();
 </script>
 </body>
 </html>
