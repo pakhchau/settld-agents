@@ -440,48 +440,63 @@ const TREE = { id:"root", children:[
   },
   {
     id:"4", title:"The Network", theme:"deep",
-    content:`<div class="emoji-big">🌏</div>
+    bg:"https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=1200&q=80",
+    content:`<div class="label">LIVE VENUES</div>
       <h1>The Casino Network</h1>
-      <p>Six locations. Three routes.<br>Where you take your players.</p>`,
+      <p>Seven confirmed venues. Three routes.<br>Real partnerships. Real locations.</p>`,
     children:[
       {
-        id:"4.1", title:"Korea — The Pilot", theme:"deep",
+        id:"4.1", title:"Korea — 6 Venues", theme:"deep",
         bg:"https://images.unsplash.com/photo-1583169927721-6c6a1c89e5f2?w=1200&q=80",
-        content:`<h2>🇰🇷 Korea — The Pilot</h2>
-          <div class="flow-row">
-            <div class="flow-box"><div style="font-size:20px">🏝️</div><div style="font-size:11px;opacity:0.6;margin-top:4px">Jeju Island<br>VIP rooms</div></div>
-            <div class="flow-arrow">→</div>
-            <div class="flow-box"><div style="font-size:20px">🏙️</div><div style="font-size:11px;opacity:0.6;margin-top:4px">Incheon<br>Inspire Resort</div></div>
-          </div>
-          <br><p>Where we prove the model.<br>Former Macau operators already here.<br><br>
-          <span class="accent">Inspire Resort</span> — built by former Macau VIP leadership.<br>
-          <span style="opacity:0.5">They know the game. We bring the crypto rails.</span></p>`
+        content:`<h2>🇰🇷 Korea — 6 Venues</h2>
+          <table>
+            <tr><th>Venue</th><th>Location</th></tr>
+            <tr><td class="accent">INSPIRE Resort</td><td>Incheon</td></tr>
+            <tr><td class="accent">Walkerhill (PCT)</td><td>Seoul</td></tr>
+            <tr><td class="accent">Seven Luck (GKL)</td><td>Seoul</td></tr>
+            <tr><td class="accent">Paradise Jeju</td><td>Jeju Island</td></tr>
+            <tr><td class="accent">Jeju Dream Tower</td><td>Jeju Island</td></tr>
+            <tr><td class="accent">Paradise Busan</td><td>Busan</td></tr>
+          </table>
+          <br><p style="opacity:0.5">All venues: 50% KRW, 60% HKD, 70% RMB<br>Sidebet available 100-300%</p>`
       },
       {
-        id:"4.2", title:"SE Asia Route", theme:"deep",
-        bg:"https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&q=80",
-        content:`<h2>🌴 SE Asia Route</h2>
+        id:"4.2", title:"INSPIRE Resort", theme:"deep",
+        bg:"https://images.unsplash.com/photo-1583169927721-6c6a1c89e5f2?w=1200&q=80",
+        content:`<h2>INSPIRE Entertainment Resort</h2>
           <p>
-            🇵🇭 <span class="accent">Philippines</span> — Manila's Entertainment City<br><br>
-            🇰🇭 <span class="accent">Cambodia</span> — Phnom Penh, Sihanoukville<br><br>
-            🇻🇳 <span class="accent">Vietnam</span> — Emerging market<br><br>
-            🇸🇬 <span class="accent">Singapore</span> — MBS, Resorts World
-          </p>
-          <br><p style="opacity:0.4">One carry-on suitcase.<br>Different country every few days.<br>Your players follow the route. You earn at every stop.</p>`
+            <span class="stat" style="font-size:clamp(28px,6vw,42px)">1,275</span>
+            <span class="stat-label">luxury rooms & suites</span><br><br>
+            <span class="accent">25 VIP sky boxes</span> · Ultra lounges · Club lounges<br><br>
+            Korea's largest casino tourist facility.<br>
+            Built by former Macau VIP leadership.<br><br>
+            <span style="opacity:0.4">5 minutes from Incheon Airport.<br>Your players land and play.</span>
+          </p>`
       },
       {
-        id:"4.3", title:"UAE 2027", theme:"gold",
+        id:"4.3", title:"StarDream Cruises", theme:"deep",
+        content:`<h2>🚢 StarDream Cruises</h2>
+          <p>
+            Casino operations <span class="accent">onboard</span><br>
+            Home port: Hong Kong<br><br>
+            60% HKD commission structure<br><br>
+            <span style="opacity:0.5">International waters. No borders.<br>The original mobile casino experience.</span>
+          </p>`
+      },
+      {
+        id:"4.4", title:"UAE 2027", theme:"gold",
         bg:"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80",
         content:`<h2>🏜️ UAE — The New Frontier</h2>
           <div class="stat" style="font-size:clamp(28px,7vw,48px)">2027</div>
-          <div class="stat-label">Ras Al Khaimah opens regulated gaming</div>
-          <br><p>First legal casino market in the Middle East.<br><br>
-          <span class="accent">First movers set the regulatory standard.</span><br><br>
-          The UAE-Saudi route connects to<br>the richest untapped gaming market on earth.<br><br>
-          <span style="opacity:0.4">Everyone's watching. We're building.</span></p>`
+          <div class="stat-label">Wynn Al Marjan Island · $3.9B resort</div>
+          <br><p>First legal casino in the Middle East.<br>
+          Ras Al Khaimah, <span class="accent">less than 1 hour from Dubai.</span><br><br>
+          Beachfront. 1,500 rooms. World-class gaming.<br><br>
+          <span class="accent">First movers set the regulatory standard.</span><br>
+          <span style="opacity:0.4">The richest untapped gaming market on earth.</span></p>`
       },
       {
-        id:"4.4", title:"The VIP Experience", theme:"warm",
+        id:"4.5", title:"The VIP Experience", theme:"warm",
         bg:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80",
         content:`<h2>What Your Players Get</h2>
           <p>
