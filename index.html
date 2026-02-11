@@ -103,17 +103,17 @@
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes textUp { from { opacity: 0; } to { opacity: 1; } }
   @keyframes statUp { from { opacity: 0; } to { opacity: 1; } }
-  /* Lateral transitions (left/right siblings) */
-  .slide.exit-left   { transform: translateX(-100%); opacity: 0; }
-  .slide.exit-right  { transform: translateX(100%);  opacity: 0; }
-  .slide.enter-left  { transform: translateX(-100%); opacity: 0; }
-  .slide.enter-right { transform: translateX(100%);  opacity: 0; }
-  /* Depth transitions — zoom effect */
-  .slide.exit-up     { transform: scale(1.15); opacity: 0; filter: blur(6px); }
-  .slide.exit-down   { transform: scale(0.85); opacity: 0; filter: blur(6px); }
-  .slide.enter-up    { transform: scale(0.85); opacity: 0; filter: blur(4px); }
-  .slide.enter-down  { transform: scale(1.15); opacity: 0; filter: blur(4px); }
-  .slide.active      { transform: translate(0,0) scale(1); opacity: 1; filter: blur(0); }
+  /* Lateral transitions — clean crossfade */
+  .slide.exit-left   { opacity: 0; }
+  .slide.exit-right  { opacity: 0; }
+  .slide.enter-left  { opacity: 0; }
+  .slide.enter-right { opacity: 0; }
+  /* Depth transitions — clean crossfade */
+  .slide.exit-up     { opacity: 0; }
+  .slide.exit-down   { opacity: 0; }
+  .slide.enter-up    { opacity: 0; }
+  .slide.enter-down  { opacity: 0; }
+  .slide.active      { opacity: 1; filter: blur(0); }
 
   .theme-black  { background: linear-gradient(160deg, #08080c 0%, #0e0e14 100%); }
   .theme-gold   { background: linear-gradient(160deg, #08080c 0%, #100e06 50%, #151108 100%); }
@@ -804,11 +804,7 @@ function renderListMap(){function rn(node,par,np){const el=document.createElemen
 backEl.addEventListener('click',()=>navigate('up'));
 let isAnimating=false;
 function bounce(dir){
-  if(!currentSlideEl)return;
-  currentSlideEl.classList.remove('bounce-left','bounce-right','bounce-up','bounce-down');
-  void currentSlideEl.offsetWidth; // force reflow
-  currentSlideEl.classList.add('bounce-'+dir);
-  setTimeout(()=>currentSlideEl&&currentSlideEl.classList.remove('bounce-'+dir),400);
+  // disabled — no rubber band effect
 }
 function navigate(a){if(isAnimating)return;const node=currentNode(),siblings=currentSiblings(),idx=currentIndex();
   switch(a){
