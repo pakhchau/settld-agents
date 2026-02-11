@@ -20,6 +20,17 @@
     content: ''; position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0.025;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+  /* Background images for slides */
+  .slide-bg {
+    position: absolute; inset: 0; z-index: -1;
+    background-size: cover; background-position: center;
+    opacity: 0.2; transition: opacity 0.6s ease;
+  }
+  .slide.active .slide-bg { opacity: 0.25; }
+  .slide-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(8,8,12,0.5) 0%, rgba(8,8,12,0.3) 40%, rgba(8,8,12,0.7) 100%);
+  }
   /* Ambient background orbs */
   .ambient-orb {
     position: absolute; border-radius: 50%; pointer-events: none;
@@ -305,12 +316,14 @@
 const TREE = { id:"root", children:[
   {
     id:"1", title:"The Opportunity", theme:"black",
+    bg:"https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=1200&q=80",
     content:`<div class="label">SETTLD</div>
       <h1>The Agent<br>Opportunity</h1>
       <p>Bridge crypto wealth to VIP casino experiences.<br>Run it as a business.</p>`,
     children:[
       {
         id:"1.1", title:"The $200B Gap", theme:"gold",
+        bg:"https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=1200&q=80",
         content:`<div class="stat">$200B+</div>
           <div class="stat-label">Macau + Asia gaming revenue at 90-95% recovery</div>
           <br><p>The legacy VIP system collapsed. COVID + regulation killed the old junket model.<br><br>
@@ -343,6 +356,7 @@ const TREE = { id:"root", children:[
   },
   {
     id:"2", title:"How It Works", theme:"deep",
+    bg:"https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200&q=80",
     content:`<div class="emoji-big">⚙️</div>
       <h1>How It Works</h1>
       <p>Three steps. Trustless. Transparent.</p>`,
@@ -432,6 +446,7 @@ const TREE = { id:"root", children:[
     children:[
       {
         id:"4.1", title:"Korea — The Pilot", theme:"deep",
+        bg:"https://images.unsplash.com/photo-1583169927721-6c6a1c89e5f2?w=1200&q=80",
         content:`<h2>🇰🇷 Korea — The Pilot</h2>
           <div class="flow-row">
             <div class="flow-box"><div style="font-size:20px">🏝️</div><div style="font-size:11px;opacity:0.6;margin-top:4px">Jeju Island<br>VIP rooms</div></div>
@@ -444,6 +459,7 @@ const TREE = { id:"root", children:[
       },
       {
         id:"4.2", title:"SE Asia Route", theme:"deep",
+        bg:"https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&q=80",
         content:`<h2>🌴 SE Asia Route</h2>
           <p>
             🇵🇭 <span class="accent">Philippines</span> — Manila's Entertainment City<br><br>
@@ -455,6 +471,7 @@ const TREE = { id:"root", children:[
       },
       {
         id:"4.3", title:"UAE 2027", theme:"gold",
+        bg:"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80",
         content:`<h2>🏜️ UAE — The New Frontier</h2>
           <div class="stat" style="font-size:clamp(28px,7vw,48px)">2027</div>
           <div class="stat-label">Ras Al Khaimah opens regulated gaming</div>
@@ -465,6 +482,7 @@ const TREE = { id:"root", children:[
       },
       {
         id:"4.4", title:"The VIP Experience", theme:"warm",
+        bg:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80",
         content:`<h2>What Your Players Get</h2>
           <p>
             🎰 <span class="accent">Private VIP tables</span> — baccarat, blackjack, roulette<br><br>
@@ -513,6 +531,7 @@ const TREE = { id:"root", children:[
   },
   {
     id:"6", title:"Next Steps", theme:"accent",
+    bg:"https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=1200&q=80",
     content:`<div class="emoji-big">🤝</div>
       <h1>Become an Agent</h1>
       <p>The table is set. The chips are ready.<br><span class="accent">Are you in?</span></p>
@@ -560,7 +579,12 @@ function animateCounters(slide){
 function addAmbientOrbs(slide){
   for(let i=1;i<=3;i++){const o=document.createElement('div');o.className=`ambient-orb orb-${i}`;slide.appendChild(o)}
 }
-function renderSlide(node,dir){if(!node)return;const s=document.createElement('div');s.className=`slide ${node.theme?'theme-'+node.theme:'theme-black'}`;s.innerHTML=node.content;addAmbientOrbs(s);if(dir)s.classList.add('enter-'+dir);else s.classList.add('active');canvas.appendChild(s);if(currentSlideEl){const old=currentSlideEl;const ed=dir==='left'?'right':dir==='right'?'left':dir==='up'?'down':dir==='down'?'up':'left';old.classList.remove('active');old.classList.add('exit-'+ed);setTimeout(()=>old.remove(),400)}requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.classList.remove('enter-left','enter-right','enter-up','enter-down');s.classList.add('active');animateCounters(s)})});currentSlideEl=s;updateUI()}
+function renderSlide(node,dir){if(!node)return;const s=document.createElement('div');s.className=`slide ${node.theme?'theme-'+node.theme:'theme-black'}`;
+  // Add background image if defined
+  if(node.bg){const bgDiv=document.createElement('div');bgDiv.className='slide-bg';bgDiv.style.backgroundImage=`url(${node.bg})`;s.appendChild(bgDiv)}
+  // Add content
+  const contentWrap=document.createElement('div');contentWrap.style.cssText='position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%';contentWrap.innerHTML=node.content;s.appendChild(contentWrap);
+  addAmbientOrbs(s);if(dir)s.classList.add('enter-'+dir);else s.classList.add('active');canvas.appendChild(s);if(currentSlideEl){const old=currentSlideEl;const ed=dir==='left'?'right':dir==='right'?'left':dir==='up'?'down':dir==='down'?'up':'left';old.classList.remove('active');old.classList.add('exit-'+ed);setTimeout(()=>old.remove(),400)}requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.classList.remove('enter-left','enter-right','enter-up','enter-down');s.classList.add('active');animateCounters(s)})});currentSlideEl=s;updateUI()}
 function updateUI(){const node=currentNode(),siblings=currentSiblings(),idx=currentIndex(),hasChildren=node&&node.children&&node.children.length>0,isDeep=path.length>1;let crumbs='';for(let d=0;d<path.length;d++){const p=path.slice(0,d+1),n=getNode(p);if(d>0)crumbs+='<span class="sep">›</span>';crumbs+=`<span class="crumb ${d===path.length-1?'current':''}" data-path="${p.join(',')}">${n?(n.title||n.id):''}</span>`}breadcrumbEl.innerHTML=crumbs;breadcrumbEl.querySelectorAll('.crumb').forEach(el=>{el.addEventListener('click',()=>{const tp=el.dataset.path.split(',').map(Number);if(tp.join(',')!==path.join(',')){path=tp;renderSlide(currentNode(),'down')}})});counterEl.textContent=`${idx+1} / ${siblings.length}`;progressEl.innerHTML='';siblings.forEach((sib,i)=>{const seg=document.createElement('div');seg.className='seg';if(i<idx)seg.classList.add('visited');if(i===idx)seg.classList.add('active');if(sib.children&&sib.children.length>0)seg.classList.add('has-children');seg.addEventListener('click',()=>{if(i!==idx){path[path.length-1]=i;renderSlide(currentNode(),i>idx?'left':'right')}});progressEl.appendChild(seg)});if(hasChildren){
     diveEl.classList.add('visible');
     const firstChild=node.children[0];
