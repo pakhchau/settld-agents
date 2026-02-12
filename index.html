@@ -146,7 +146,10 @@
   .list-item { text-align: left; max-width: 480px; margin: 6px 0; font-size: clamp(13px, 3vw, 17px); line-height: 1.6; opacity: 0.85; }
 
   /* Nav */
-  #topbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; padding: 0 16px; z-index: 200; background: rgba(8,8,12,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  #topbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; padding: 0 10px; z-index: 200; background: rgba(8,8,12,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  #nav-left, #nav-right { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 300; cursor: pointer; opacity: 0.5; transition: all 0.2s; border-radius: 8px; border: none; background: none; color: #e8e8e8; -webkit-tap-highlight-color: transparent; flex-shrink: 0; }
+  #nav-left:hover, #nav-right:hover { opacity: 1; background: rgba(255,255,255,0.08); }
+  #nav-left:active, #nav-right:active { opacity: 1; background: rgba(201,168,76,0.15); color: #c9a84c; transform: scale(0.92); }
   #breadcrumb { font-size: 12px; font-weight: 600; opacity: 0.6; display: flex; align-items: center; gap: 4px; flex: 1; }
   #breadcrumb .crumb { opacity: 0.4; cursor: pointer; transition: opacity 0.2s; }
   #breadcrumb .crumb:hover { opacity: 0.8; }
@@ -274,8 +277,10 @@
 </head>
 <body>
 <div id="topbar">
+  <button id="nav-left" onclick="navPrev()" aria-label="Previous">‹</button>
   <div id="breadcrumb"></div>
   <div id="counter"></div>
+  <button id="nav-right" onclick="navNext()" aria-label="Next">›</button>
   <button id="feedback-btn" onclick="toggleFeedback()">💬<span class="fb-badge"></span></button>
   <button id="share-btn" onclick="shareDeck()">↗</button>
   <div id="map-toggle" onclick="toggleMap()">☰</div>
@@ -905,6 +910,14 @@ document.addEventListener('touchend',e=>{
 document.addEventListener('keydown',e=>{if(minimap.classList.contains('open')){if(e.key==='Escape')toggleMap();return}switch(e.key){case'ArrowRight':case'l':navigate('right');break;case'ArrowLeft':case'h':navigate('left');break;case'ArrowDown':case'j':case' ':navigate('down');e.preventDefault();break;case'ArrowUp':case'k':navigate('up');e.preventDefault();break;case'Escape':if(path.length>1)navigate('up');break;case'm':toggleMap();break}});
 let wL=false;document.addEventListener('wheel',e=>{e.preventDefault();if(wL)return;wL=true;setTimeout(()=>wL=false,400);if(Math.abs(e.deltaX)>Math.abs(e.deltaY)&&Math.abs(e.deltaX)>10)navigate(e.deltaX>0?'right':'left');else if(Math.abs(e.deltaY)>10)navigate(e.deltaY>0?'down':'up')},{passive:false});
 renderSlide(currentNode(),null);
+
+// ── TOP NAV BUTTONS ──
+function navPrev(){navigate('left')}
+function navNext(){
+  const node=currentNode();
+  if(node&&node.children&&node.children.length>0)navigate('down');
+  else navigate('right');
+}
 
 // ── SHARE ──
 async function shareDeck(){
